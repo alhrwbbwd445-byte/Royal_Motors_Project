@@ -1,1 +1,38 @@
+<?php
+// إعدادات قاعدة البيانات - تأكد أنها تطابق إعداداتك في XAMPP/WAMP
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "royal_motors"; // تأكد من اسم قاعدة البيانات الخاص بمشروعك
 
+// 1. اختبار الاتصال
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+echo "<h2>فحص مشروع Royal Motors</h2>";
+
+if ($conn->connect_error) {
+    die("<p style='color:red;'>❌ فشل الاتصال بقاعدة البيانات: " . $conn->connect_error . "</p>");
+}
+echo "<p style='color:green;'>✅ تم الاتصال بقاعدة البيانات بنجاح!</p>";
+
+// 2. اختبار جلب بيانات السيارات (تأكد من وجود جدول اسمه cars)
+$sql = "SELECT id, model, price FROM cars LIMIT 5";
+$result = $conn->query($sql);
+
+if ($result) {
+    echo "<h3>قائمة السيارات المتوفرة (أول 5):</h3>";
+    if ($result->num_rows > 0) {
+        echo "<ul>";
+        while($row = $result->fetch_assoc()) {
+            echo "<li>الموديل: " . $row["model"]. " - السعر: " . $row["price"]. "</li>";
+        }
+        echo "</ul>";
+    } else {
+        echo "<p>⚠️ لا توجد سيارات مضافة في الجدول حالياً.</p>";
+    }
+} else {
+    echo "<p style='color:orange;'>⚠️ خطأ في الاستعلام: تأكد من وجود جدول باسم 'cars'.</p>";
+}
+
+$conn->close();
+?>
